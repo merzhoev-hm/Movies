@@ -19,6 +19,7 @@ const searchMovie = ref("");
     />
   </form>
   <Loader v-if="searchStore.loader" />
+  <div v-if="searchStore.isError">Ошибка...</div>
   <div v-else>
     <Movie
       v-for="movie in searchStore.movies"

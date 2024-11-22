@@ -3,21 +3,27 @@ import { useMovieStore } from "./MovieStore";
 import { ref } from "vue";
 
 const url =
-  "https:api.themoviedb.org/3/search/movie?api_key=068289f5cb41c3fad3680f30067e7efa&query=";
+  "https:api.themoviedb.org/3/search/movie?api_key=adfdc1839d6e8c0dbbcdcfc5e7eef589&query=";
 
 export const useSearchStore = defineStore("searchStore", () => {
   const loader = ref(false);
+  const isError = ref(false);
   const movies = ref([]);
 
   const getMovies = async (search) => {
-    loader.value = true;
-    movies.value = [];
-    const res = await fetch(`${url}${search}`);
-    const data = await res.json();
-    data.results.forEach((el) => {
-      movies.value.push({ ...el, isWatched: false, isAdd: false });
-    });
-
+    try {
+      isError.value = false;
+      loader.value = true;
+      movies.value = [];
+      const res = await fetch(`${url}${search}`);
+      const data = await res.json();
+      data.results.forEach((el) => {
+        movies.value.push({ ...el, isWatched: false, isAdd: false });
+      });
+    } catch (error) {
+      isError.value = true;
+      console.log(error);
+    }
     loader.value = false;
   };
 
@@ -40,5 +46,6 @@ export const useSearchStore = defineStore("searchStore", () => {
     movies,
     getMovies,
     addToUserMovies,
+    isError,
   };
 });
